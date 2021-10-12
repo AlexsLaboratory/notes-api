@@ -1,0 +1,13 @@
+{
+  "name": "gainz-api",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "~4.16.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  }
+}
