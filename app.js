@@ -1,8 +1,16 @@
 const path = require("path");
 const express = require("express");
 const app = express();
-const workoutData = require("./routes/workout");
+const sequelize = require('./util/database');
+const workoutRoutes = require('./routes/workout');
 
-app.use("/workout", workoutData.routes);
+app.use("/workout", workoutRoutes);
 
-app.listen(3000);
+sequelize
+  .sync()
+  .then(result => {
+    app.listen(3000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
