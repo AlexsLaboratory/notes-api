@@ -1,6 +1,9 @@
 const Workout = require("../models/workout");
+const pagination = require("../util/pagination");
+const {hasNext, hasPrev} = require("../util/pagination");
+const {Op} = require("sequelize");
 
-exports.AddWorkout = (req, res, next) => {
+exports.addWorkout = (req, res, next) => {
   const title = req.body.title;
   const body = req.body.body;
   Workout.create({
@@ -14,4 +17,18 @@ exports.AddWorkout = (req, res, next) => {
     })
     console.log(err);
   });
+};
+
+exports.getWorkouts = async (req, res) => {
+  let limit = parseInt(req.query.limit);
+  let cursor = parseInt(req.query.cursor);
+  if (isNaN(limit)) {
+    limit = 3;
+  }
+
+  if (isNaN(cursor)) {
+    cursor = null;
+  }
+
+  await pagination.find(Workout, cursor, limit, res, "next");
 };
