@@ -78,4 +78,4 @@ fabric.properties
 #####################
 
 node_modules
-config
+config/.env

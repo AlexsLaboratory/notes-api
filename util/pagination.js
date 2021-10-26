@@ -21,22 +21,22 @@ async function hasPrev(obj, cursor) {
 }
 
 async function find(obj, cursor, limit, res, direction) {
-  async function processResult(results) {
-    let next = await hasNext(obj, results[results.length - 1].id).then(result => {
-      return result;
+  async function processResult(data) {
+    let next = await hasNext(obj, data[data.length - 1].id).then(data => {
+      return data;
     });
     next = next > 0;
-    let prev = await hasPrev(obj, results[0].id).then(result => {
+    let prev = await hasPrev(obj, data[0].id).then(result => {
       return result;
     });
     prev = prev > 0;
 
     res.status(200).json({
-      results,
-      cursor: {
-        prev: prev ? results[0].id : null,
-        next: next ? results[results.length - 1].id : null,
-        direction: direction
+      page: {
+        prev: prev ? data[0].id : null,
+        next: next ? data[data.length - 1].id : null,
+        direction: direction,
+        data
       }
     });
   }
