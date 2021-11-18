@@ -12,7 +12,7 @@ app.put("/signup", [
       .isEmail()
       .withMessage("Please enter valid email address")
       .custom((value, {req}) => {
-        return User.findOne({email: value}).then(userDoc => {
+        return User.findOne({where: {email: value} }).then(userDoc => {
           if (userDoc) {
             return Promise.reject("E-Mail address already exists!");
           }
