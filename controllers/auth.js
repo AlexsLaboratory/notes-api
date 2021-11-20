@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator/check");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const User = require("../models/user");
 
 exports.signup = (req, res, body) => {
@@ -49,9 +50,18 @@ exports.login = (req, res, body) => {
         .compare(password, user.password)
         .then(doMatch => {
           if (doMatch) {
-            return res.status(201).json({ message: "Correct password." })
+            crypto.randomBytes(32, (err, buffer) => {
+              if (err) {
+                return res.status(500).json({ message: "Internal server error." })
+              }
+              const token = buffer.toString('hex');
+              user.loginToken = token;
+              user.loginTokenExpiration = Date.now() + 604800000 // expires in one week
+              user.save();
+              return res.status(200).json({ email: email, token: token })
+            })
           }
-          return res.status(422).json({ message: "Incorrect password." })
+          else return res.status(422).json({ message: "Incorrect password." })
         })
         .catch(err => {
           if (!err.statusCode) {
