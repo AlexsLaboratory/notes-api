@@ -1,19 +1,24 @@
-const Sequelize = require('sequelize');
-
-const sequelize = require('../util/database');
-
-const Workout = sequelize.define('workout', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true
-  },
-  title: Sequelize.STRING,
-  body: {
-    type: Sequelize.TEXT,
-    allowNull: false
-  }
-});
-
-module.exports = Workout;
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Workout extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  };
+  Workout.init({
+    title: DataTypes.STRING,
+    body: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Workout',
+  });
+  return Workout;
+};
