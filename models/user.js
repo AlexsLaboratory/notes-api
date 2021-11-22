@@ -26,15 +26,6 @@ const User = sequelize.define('user', {
       notNull: true
     }
   },
-  loginToken: {
-    type: Sequelize.STRING,
-    allowNull: true
-
-  },
-  loginTokenExpiration: {
-    type: Sequelize.DATE,
-    allowNull: true
-  },
   name: {
     type: Sequelize.STRING,
     allowNull: false,
