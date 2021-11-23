@@ -1,4 +1,4 @@
-const Workout = require("../models/workout");
+const { Workout } = require("../models");
 const pagination = require("../util/pagination");
 const {hasNext, hasPrev} = require("../util/pagination");
 const {Op} = require("sequelize");
