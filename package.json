@@ -3,7 +3,25 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "nodemon app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "changelog": "auto-changelog && git add CHANGELOG.md"
+  },
+  "auto-changelog": {
+    "template": "changelog-template.hbs",
+    "compareUrl": "https://gitlab.cs.ecu.edu/csci-3030/fall-2021/team-10/gainz-api/-/compare/{from}...{to}",
+    "unreleased": false,
+    "commitLimit": false,
+    "breakingPattern": "BREAKING CHANGE:",
+    "ignoreCommitPattern": "^test:.+|docs:.+",
+    "hideCredit": true,
+    "replaceText": {
+      "feat:": "",
+      "fix:": "",
+      "chore:": "",
+      "refactor:": "",
+      "style:": "",
+      "perf:": ""
+    }
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -15,6 +33,7 @@
     "sequelize": "^6.7.0"
   },
   "devDependencies": {
+    "auto-changelog": "^2.3.0",
     "nodemon": "^2.0.13",
     "sequelize-cli": "^6.3.0"
   }
