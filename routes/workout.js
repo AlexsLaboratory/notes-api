@@ -1,10 +1,10 @@
-const path = require("path");
 const express = require("express");
 const workoutController = require("../controllers/workout");
+const isAuth = require("../middleware/is-auth");
 const app = express();
 app.use(express.json());
 
-app.post("/create", workoutController.addWorkout);
-app.get("/get-all", workoutController.getWorkouts);
+app.post("/create", isAuth, workoutController.addWorkout);
+app.get("/get-all", isAuth, workoutController.getWorkouts);
 
 module.exports = app;
