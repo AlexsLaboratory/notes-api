@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v1.0.0-alpha](https://gitlab.cs.ecu.edu/csci-3030/fall-2021/team-10/gainz-api/-/compare/v0.1.1...v1.0.0-alpha) - 2021-11-26
+
+
+
+
+### Commits
+
+-  findOne Method in Express-Validator [`aab6bf6`](https://gitlab.cs.ecu.edu/csci-3030/fall-2021/commit/aab6bf61bfc42350b2100c8c9ff32498e938ce07)
+-  Require Authentication Before Accessing Resources [`ad56a3f`](https://gitlab.cs.ecu.edu/csci-3030/fall-2021/commit/ad56a3f6263ede270ac139e4a2f47d707f0d455f)
+- Merge tag 'v0.1.1' into develop [`53cc6e3`](https://gitlab.cs.ecu.edu/csci-3030/fall-2021/commit/53cc6e3536669581371099091ba9227eed2ef2f3)
+-  Add Template .env File [`44f0cd9`](https://gitlab.cs.ecu.edu/csci-3030/fall-2021/commit/44f0cd9fba107243aa51a8778133711fc7799d19)
+- Merge tag 'v0.1.0' into develop [`a23c25d`](https://gitlab.cs.ecu.edu/csci-3030/fall-2021/commit/a23c25daab147b5702891dcae245693437020f49)
+
 ## [v0.1.1](https://gitlab.cs.ecu.edu/csci-3030/fall-2021/team-10/gainz-api/-/compare/v0.1.0...v0.1.1) - 2021-11-23
 
 
