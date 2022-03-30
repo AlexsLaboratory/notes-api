@@ -1,4 +1,4 @@
-const { Workout } = require("../models");
+const {Workout} = require("../models");
 const pagination = require("../util/pagination");
 const {hasNext, hasPrev} = require("../util/pagination");
 const {Op} = require("sequelize");
@@ -18,6 +18,18 @@ exports.addWorkout = (req, res, next) => {
     console.log(err);
   });
 };
+
+exports.getWorkout = async (req, res) => {
+  let primaryKey = parseInt(req.query.id)
+  Workout.findByPk(primaryKey).then(data => {
+    res.status(200).json(data)
+  }).catch(err => {
+    res.status(500).send({
+      error: "Sorry something happened on our side. Please try again"
+    })
+    console.log(err);
+  });
+}
 
 exports.getWorkouts = async (req, res) => {
   let limit = parseInt(req.query.limit);
