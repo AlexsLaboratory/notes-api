@@ -1,9 +1,9 @@
 module.exports = {
-  HOST: process.env.DB_HOST,
-  USER: process.env.DB_USER,
-  PASSWORD: process.env.DB_PASS,
-  DB: process.env.DATABASE,
-  dialect: "mysql",
+  HOST: process.env.POSTGRES_HOST,
+  USER: process.env.POSTGRES_USER,
+  PASSWORD: process.env.POSTGRES_PASSWORD,
+  DB: process.env.POSTGRES_DB,
+  dialect: "postgres",
   pool: {
     max: 5,
     min: 0,
