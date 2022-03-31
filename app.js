@@ -7,7 +7,7 @@ const app = express();
 const sequelize = require('./util/database');
 const workoutRoutes = require('./routes/workout');
 const authRoutes = require('./routes/auth');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 80;
 
 app.use("/workout", workoutRoutes);
 app.use("/auth", authRoutes);
