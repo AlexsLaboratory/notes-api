@@ -19,7 +19,8 @@ app.put("/signup", [
       })
       .normalizeEmail(),
     check("password").trim().isLength({min: 8}),
-    check("name").trim().not().isEmpty()
+    check("firstName").trim().not().isEmpty(),
+    check("lastName").trim().not().isEmpty()
   ], authController.signup
 );
 
