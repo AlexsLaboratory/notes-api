@@ -5,16 +5,20 @@ services:
     build:
       context: ./
       dockerfile: ./docker/app/Dockerfile
-    env_file: .env
+    env_file: ./config/.env
     depends_on:
       - postgres
+    ports:
+      - "80:80"
   postgres:
     container_name: notebook_db
     image: postgres:14.2-alpine3.15
     restart: on-failure
-    env_file: .env
+    env_file: ./config/.env
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
 
 volumes:
   postgres_data:
