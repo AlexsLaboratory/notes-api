@@ -5,11 +5,11 @@ const path = require("path");
 const express = require("express");
 const app = express();
 const sequelize = require('./util/database');
-const workoutRoutes = require('./routes/workout');
+const noteRoutes = require('./routes/note');
 const authRoutes = require('./routes/auth');
 const PORT = process.env.PORT || 3000;
 
-app.use("/workout", workoutRoutes);
+app.use("/note", noteRoutes);
 app.use("/auth", authRoutes);
 
 app.use((error, req, res, next) => {

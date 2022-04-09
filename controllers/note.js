@@ -1,12 +1,12 @@
-const {Workout} = require("../models");
+const {Note} = require("../models");
 const pagination = require("../util/pagination");
 const {hasNext, hasPrev} = require("../util/pagination");
 const {Op} = require("sequelize");
 
-exports.addWorkout = (req, res, next) => {
+exports.addNote = (req, res, next) => {
   const title = req.body.title;
   const body = req.body.body;
-  Workout.create({
+  Note.create({
     title: title,
     body: body
   }).then(data => {
@@ -19,9 +19,9 @@ exports.addWorkout = (req, res, next) => {
   });
 };
 
-exports.getWorkout = async (req, res) => {
+exports.getNote = async (req, res) => {
   let primaryKey = parseInt(req.query.id)
-  Workout.findByPk(primaryKey).then(data => {
+  Note.findByPk(primaryKey).then(data => {
     res.status(200).json(data)
   }).catch(err => {
     res.status(500).send({
@@ -31,7 +31,7 @@ exports.getWorkout = async (req, res) => {
   });
 }
 
-exports.getWorkouts = async (req, res) => {
+exports.getNotes = async (req, res) => {
   let limit = parseInt(req.query.limit);
   let cursor = parseInt(req.query.cursor);
   if (isNaN(limit)) {
@@ -42,5 +42,5 @@ exports.getWorkouts = async (req, res) => {
     cursor = null;
   }
 
-  await pagination.find(Workout, cursor, limit, res, "next");
+  await pagination.find(Note, cursor, limit, res, "next");
 };
