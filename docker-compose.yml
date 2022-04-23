@@ -22,7 +22,9 @@ services:
       - "5432:5432"
   redis:
     container_name: notebook_cache
-    image: redis:6.2.6-alpine3.15
+    build:
+      context: ./
+      dockerfile: ./docker/redis/Dockerfile
     restart: on-failure
     volumes:
       - redis_data:/data
