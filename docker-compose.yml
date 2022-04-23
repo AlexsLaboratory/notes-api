@@ -8,6 +8,7 @@ services:
     env_file: ./config/.env
     depends_on:
       - postgres
+      - redis
     ports:
       - "80:80"
   postgres:
@@ -19,6 +20,13 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
+  redis:
+    container_name: notebook_cache
+    image: redis:6.2.6-alpine3.15
+    restart: on-failure
+    volumes:
+      - redis_data:/data
 
 volumes:
   postgres_data:
+  redis_data:
