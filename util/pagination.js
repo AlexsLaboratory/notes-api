@@ -22,6 +22,12 @@ async function hasPrev(obj, cursor) {
 
 async function find(obj, cursor, limit, res, direction) {
   async function processResult(data) {
+    if (data[data.length - 1].id === undefined) {
+      res.status(404).json({
+        message: "No notes found."
+      });
+    }
+
     let next = await hasNext(obj, data[data.length - 1].id).then(data => {
       return data;
     });
