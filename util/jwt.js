@@ -7,7 +7,7 @@ module.exports.signAccessToken = (userId) => {
     const secret = process.env.API_SECRET;
     const options = {
       expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION,
-      audience: userId
+      audience: userId.toString()
     };
     jwt.sign(payload, secret, options, (err, token) => {
       if (err) return reject(err);
