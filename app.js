@@ -4,7 +4,7 @@ if (process.env.NODE_ENV !== "production") {
 const path = require("path");
 const express = require("express");
 const app = express();
-import errorHandler from "./util/error";
+const errorHandler = require("./util/error");
 const sequelize = require('./util/database');
 const noteRoutes = require('./routes/note');
 const authRoutes = require('./routes/auth');
