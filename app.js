@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== "production") {
 const path = require("path");
 const express = require("express");
 const app = express();
+import errorHandler from "./util/error";
 const sequelize = require('./util/database');
 const noteRoutes = require('./routes/note');
 const authRoutes = require('./routes/auth');
@@ -12,13 +13,7 @@ const PORT = process.env.PORT || 80;
 app.use("/note", noteRoutes);
 app.use("/auth", authRoutes);
 
-app.use((error, req, res, next) => {
-  console.log(error);
-  const status = error.statusCode || 500;
-  const message = error.message;
-  const data = error.data;
-  res.status(status).json({ message: message, data: data });
-});
+app.use(errorHandler);
 
 sequelize
   .sync()
