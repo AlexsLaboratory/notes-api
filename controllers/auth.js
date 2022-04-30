@@ -29,7 +29,7 @@ exports.login = catchAsync(async (req, res, next) => {
   const password = req.body.password;
   let loadedUser = await User.findOne({where: {email: email}});
   if (!loadedUser) return next(new CustomError("A user with this email could not be found", 404));
-  const isAuthorized = bcrypt.compare(password, loadedUser.password);
+  const isAuthorized = await bcrypt.compare(password, loadedUser.password);
   if (!isAuthorized) return next(new CustomError("Check your email and password again", 401));
   const accessToken = await signAccessToken(loadedUser.id);
   const [header, body, signature] = accessToken.split(".");
