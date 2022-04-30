@@ -6,9 +6,8 @@ const createError = require("http-errors");
 const {User} = require("../models");
 const {signAccessToken} = require("../util/jwt");
 const {setKey} = require("../util/redis");
-const {catchAsync} = require("../util/error");
 const ms = require("ms");
-const {CustomError} = require("../util/error");
+const {CustomError, catchAsync} = require("../util/error");
 
 exports.signup = catchAsync(async (req, res, next) => {
   const validation = validationResult(req);

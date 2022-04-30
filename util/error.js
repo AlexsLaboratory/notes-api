@@ -1,4 +1,4 @@
-module.exports = class CustomError extends Error {
+class CustomError extends Error {
   constructor(message, statusCode) {
     super(message);
 
@@ -10,11 +10,11 @@ module.exports = class CustomError extends Error {
   }
 }
 
-export function catchAsync(fn) {
+function catchAsync(fn) {
   return (req, res, next) => {
     fn(req, res, next).catch(err => next(err));
   };
-};
+}
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
@@ -48,3 +48,6 @@ module.exports = (err, req, res, next) => {
     sendErrorProd(err, res);
   }
 };
+
+module.exports.CustomError = CustomError
+module.exports.catchAsync = catchAsync;
