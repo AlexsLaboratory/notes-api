@@ -1,7 +1,7 @@
 const express = require("express");
 const {check} = require("express-validator");
 const {User} = require("../models");
-const authController = require("../controllers/auth");
+const {signup, login} = require("../controllers/auth");
 
 const app = express();
 app.use(express.json());
@@ -21,7 +21,7 @@ app.post("/signup", [
     check("password").trim().isLength({min: 8}),
     check("firstName").trim().not().isEmpty(),
     check("lastName").trim().not().isEmpty()
-  ], authController.signup
+  ], signup
 );
 
 app.post("/login", [
@@ -30,7 +30,7 @@ app.post("/login", [
       .withMessage("Please enter a valid email address")
       .normalizeEmail(),
     check("password").trim().isLength({min: 8}),
-  ], authController.login
+  ], login
 );
 
 module.exports = app;

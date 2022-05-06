@@ -1,11 +1,11 @@
 const express = require("express");
-const noteController = require("../controllers/note");
+const {addNote, getNote, getNotes} = require("../controllers/note");
 const isAuth = require("../middleware/is-auth");
 const app = express();
 app.use(express.json());
 
-app.post("/create", isAuth, noteController.addNote);
-app.get("/get", isAuth, noteController.getNote);
-app.get("/get-all", isAuth, noteController.getNotes);
+app.post("/create", isAuth, addNote);
+app.get("/get", isAuth, getNote);
+app.get("/get-all", isAuth, getNotes);
 
 module.exports = app;
