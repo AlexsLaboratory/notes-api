@@ -1,11 +1,8 @@
 const {validationResult} = require("express-validator");
 const bcrypt = require("bcrypt");
-const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
-const createError = require("http-errors");
 const {User} = require("../models");
 const {signAccessToken} = require("../util/jwt");
-const {setKey} = require("../util/redis");
+const {setKeyPair, generateHash} = require("../util/redis");
 const ms = require("ms");
 const {CustomError, catchAsync} = require("../util/error");
 
@@ -17,11 +14,10 @@ exports.signup = catchAsync(async (req, res, next) => {
   const lastName = req.body.lastName;
   const password = req.body.password;
   const hashedPassword = await bcrypt.hash(password, 12);
-  const user = new User({
+  const user = await User.create({
     email: email, password: hashedPassword, firstName: firstName, lastName: lastName,
   });
-  const result = await user.save();
-  res.status(201).json({message: "User created", userID: result.id});
+  res.status(201).json({message: "User created", userID: user.id});
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -34,8 +30,8 @@ exports.login = catchAsync(async (req, res, next) => {
   const accessToken = await signAccessToken(loadedUser.id);
   const [header, body, signature] = accessToken.split(".");
   const redisPayload = `${header}.${body}`;
-  const signatureHash = crypto.createHash("sha256").update(signature).digest("base64");
+  const signatureHash = generateHash(signature);
   const time = ms(process.env.JWT_ACCESS_TOKEN_EXPIRATION) / 1000;
-  await setKey(signatureHash, redisPayload, time);
+  await setKeyPair(signatureHash, redisPayload, time);
   res.status(200).json({token: signature})
 });

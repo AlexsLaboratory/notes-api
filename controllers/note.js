@@ -1,39 +1,33 @@
 const {Note} = require("../models");
 const pagination = require("../util/pagination");
-const {hasNext, hasPrev} = require("../util/pagination");
-const {Op} = require("sequelize");
+const {CustomError, catchAsync} = require("../util/error");
 
-exports.addNote = (req, res, next) => {
+exports.addNote = catchAsync(async (req, res, next) => {
   const title = req.body.title;
   const body = req.body.body;
-  Note.create({
+  const userID = parseInt(req.body.userID);
+  if (!userID) return next(new CustomError("Please login first", 401));
+  const note = await Note.create({
     title: title,
-    body: body
-  }).then(data => {
-    res.status(200).json(data)
-  }).catch(err => {
-    res.status(500).send({
-      error: "Sorry something happened on our side. Please try again"
-    })
-    console.log(err);
+    body: body,
+    userID: userID
   });
-};
+  res.status(200).json(note);
+});
 
-exports.getNote = async (req, res) => {
-  let primaryKey = parseInt(req.query.id)
-  Note.findByPk(primaryKey).then(data => {
-    res.status(200).json(data)
-  }).catch(err => {
-    res.status(500).send({
-      error: "Sorry something happened on our side. Please try again"
-    })
-    console.log(err);
-  });
-}
+exports.getNote = catchAsync(async (req, res, next) => {
+  const primaryKey = parseInt(req.query.id)
+  const userID = parseInt(req.body.userID);
+  if (!userID) return next(new CustomError("Please login first", 401));
+  const note = await Note.findOne({where: {id: primaryKey, userID: userID}})
+  res.status(200).json(note);
+});
 
-exports.getNotes = async (req, res) => {
+exports.getNotes = async (req, res, next) => {
   let limit = parseInt(req.query.limit);
   let cursor = parseInt(req.query.cursor);
+  const userID = parseInt(req.body.userID);
+  if (!userID) return next(new CustomError("Please login first", 401));
   if (isNaN(limit)) {
     limit = 3;
   }
@@ -42,5 +36,5 @@ exports.getNotes = async (req, res) => {
     cursor = null;
   }
 
-  await pagination.find(Note, cursor, limit, res, "next");
+  await pagination.find(Note, cursor, limit, req, res, "next");
 };
