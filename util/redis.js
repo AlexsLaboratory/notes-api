@@ -1,4 +1,5 @@
-const redis = require('redis');
+const redis = require("redis");
+const crypto = require("crypto");
 
 function redisInstance() {
   return redis.createClient({
@@ -6,7 +7,11 @@ function redisInstance() {
   });
 }
 
-module.exports.getKey = async (key) => {
+module.exports.generateHash = (value) => {
+  return crypto.createHash("sha256").update(value).digest("base64");
+}
+
+module.exports.getKeyPair = async (key) => {
   try {
     const instance = redisInstance();
     await instance.connect();
@@ -18,7 +23,7 @@ module.exports.getKey = async (key) => {
   }
 }
 
-module.exports.setKey = async (key, value, time) => {
+module.exports.setKeyPair = async (key, value, time) => {
   try {
     const instance = redisInstance();
     await instance.connect();

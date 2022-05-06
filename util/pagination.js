@@ -1,26 +1,29 @@
 const {Op} = require("sequelize");
 
-async function hasNext(obj, cursor) {
+async function hasNext(obj, cursor, userID) {
   return await obj.count({
     where: {
-      "id": {
+      id: {
         [Op.gt]: cursor
-      }
+      },
+      userID: userID
     }
   });
 }
 
-async function hasPrev(obj, cursor) {
+async function hasPrev(obj, cursor, userID) {
   return await obj.count({
     where: {
-      "id": {
+      id: {
         [Op.lt]: cursor
-      }
+      },
+      userID: userID
     }
   });
 }
 
-async function find(obj, cursor, limit, res, direction) {
+async function find(obj, cursor, limit, req, res, direction) {
+  const userID = parseInt(req.body.userID);
   async function processResult(data) {
     if (data[data.length - 1].id === undefined) {
       res.status(404).json({
@@ -28,12 +31,12 @@ async function find(obj, cursor, limit, res, direction) {
       });
     }
 
-    let next = await hasNext(obj, data[data.length - 1].id).then(data => {
+    let next = await hasNext(obj, data[data.length - 1].id, userID).then(data => {
       return data;
     });
     next = next > 0;
-    let prev = await hasPrev(obj, data[0].id).then(result => {
-      return result;
+    let prev = await hasPrev(obj, data[0].id, userID).then(data => {
+      return data;
     });
     prev = prev > 0;
 
@@ -50,6 +53,9 @@ async function find(obj, cursor, limit, res, direction) {
   if (direction === "next") {
     if (cursor === null) {
       obj.findAll({
+        where: {
+          userID: userID
+        },
         order: [
           ["id", "ASC"]
         ],
@@ -60,7 +66,8 @@ async function find(obj, cursor, limit, res, direction) {
         where: {
           id: {
             [Op.gt]: parseInt(cursor)
-          }
+          },
+          userID: userID
         },
         order: [
           ["id", "ASC"]
