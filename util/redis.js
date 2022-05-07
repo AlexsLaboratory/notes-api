@@ -9,6 +9,7 @@ function redisInstance() {
 }
 
 const instance = redisInstance();
+instance.connect().then(r => {return r;});
 
 module.exports.generateHash = (value) => {
   return crypto.createHash("sha256").update(value).digest("base64");
