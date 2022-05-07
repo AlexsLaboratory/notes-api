@@ -10,12 +10,6 @@ function redisInstance() {
 
 const instance = redisInstance();
 
-try {
-  await instance.connect();
-} catch (e) {
-  throw new CustomError(e, 500);
-}
-
 module.exports.generateHash = (value) => {
   return crypto.createHash("sha256").update(value).digest("base64");
 }
