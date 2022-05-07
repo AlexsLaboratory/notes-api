@@ -23,7 +23,7 @@ async function hasPrev(obj, cursor, userID) {
 }
 
 async function find(obj, cursor, limit, req, res, direction) {
-  const userID = parseInt(req.body.userID);
+  const userID = parseInt(req.userID);
   async function processResult(data) {
     if (data[data.length - 1].id === undefined) {
       res.status(404).json({
