@@ -2,11 +2,17 @@ const redis = require("redis");
 const crypto = require("crypto");
 const {CustomError} = require("./error");
 
-async function redisInstance() {
+function redisInstance() {
   const client = redis.createClient({
     url: "redis://redis:6379"
   });
-  await client.connect();
+  client.on("connect", () => {
+    console.log("Redis Client Connected!");
+  });
+  client.on("error", (err) => {
+    throw new CustomError(err, 500);
+  });
+  client.connect();
   return client;
 }
 
