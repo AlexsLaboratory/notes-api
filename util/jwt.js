@@ -17,20 +17,23 @@ module.exports.signAccessToken = (userID) => {
   });
 }
 
-module.exports.getJWT = (signature) => {
+function getJWT(signature) {
   const signatureHash = generateHash(signature);
   const tokenPart = getKeyPair(signatureHash);
   return `${tokenPart}.${signature}`;
 }
 
-module.exports.verifyAccessToken = (accessToken) => {
+module.exports.getJWT = getJWT;
+
+module.exports.verifyAccessToken = (signature) => {
   return new Promise((resolve, reject) => {
     const secret = process.env.API_SECRET;
     const options = {
       audience: "https://note.alex-lowe.tech",
       issuer: "Note Application INC"
     }
-    jwt.verify(accessToken, secret, options,(err, decodedToken) => {
+    const accessToken = getJWT(signature);
+    jwt.verify(accessToken, secret, options, (err, decodedToken) => {
       if (err) return reject(err);
       return resolve(decodedToken)
     });
