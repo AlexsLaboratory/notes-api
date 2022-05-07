@@ -2,14 +2,15 @@ const redis = require("redis");
 const crypto = require("crypto");
 const {CustomError} = require("./error");
 
-function redisInstance() {
-  return redis.createClient({
+async function redisInstance() {
+  const client = redis.createClient({
     url: "redis://redis:6379"
   });
+  await client.connect();
+  return client;
 }
 
 const instance = redisInstance();
-instance.connect().then(r => {return r;});
 
 module.exports.generateHash = (value) => {
   return crypto.createHash("sha256").update(value).digest("base64");
