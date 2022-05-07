@@ -7,7 +7,6 @@ module.exports = catchAsync(async (req, res, next) => {
   if (!authHeader) return next(new CustomError("Not authenticated", 401));
   const token = authHeader.split(" ")[1];
   const decodedToken = await verifyAccessToken(token);
-  if (!decodedToken) return next(new CustomError("Not authenticated", 401));
   req.userID = decodedToken.userID
   next();
 });
