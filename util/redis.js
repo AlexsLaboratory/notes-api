@@ -1,10 +1,19 @@
 const redis = require("redis");
 const crypto = require("crypto");
+const {CustomError} = require("./error");
 
 function redisInstance() {
   return redis.createClient({
     url: "redis://redis:6379"
   });
+}
+
+const instance = redisInstance();
+
+try {
+  await instance.connect();
+} catch (e) {
+  throw new CustomError(e, 500);
 }
 
 module.exports.generateHash = (value) => {
@@ -13,27 +22,19 @@ module.exports.generateHash = (value) => {
 
 module.exports.getKeyPair = async (key) => {
   try {
-    const instance = redisInstance();
-    await instance.connect();
-    const result = await instance.get(key);
-    await instance.quit();
-    return result;
+    return await instance.get(key);
   } catch (e) {
-    return e;
+    throw new CustomError(e, 500);
   }
 }
 
 module.exports.setKeyPair = async (key, value, time) => {
   try {
-    const instance = redisInstance();
-    await instance.connect();
-    const result = await instance.set(key, value, {
+    return await instance.set(key, value, {
       EX: time,
       NX: true
     });
-    await instance.quit();
-    return result;
   } catch (e) {
-    return e;
+    throw new CustomError(e, 500);
   }
 }
