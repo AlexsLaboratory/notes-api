@@ -12,7 +12,7 @@ exports.addNote = catchAsync(async (req, res, next) => {
     body: body,
     userID: userID
   });
-  res.status(200).json(note);
+  res.status(201).json(note);
 });
 
 exports.getNote = catchAsync(async (req, res, next) => {
