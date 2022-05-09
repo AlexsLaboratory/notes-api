@@ -1,8 +1,7 @@
 const {validationResult} = require("express-validator");
 const bcrypt = require("bcrypt");
 const {User} = require("../models");
-const {signAccessToken} = require("../util/jwt");
-const {setKeyPair, generateHash} = require("../util/redis");
+const {generateTokenPair} = require("../util/jwt");
 const ms = require("ms");
 const {CustomError, catchAsync} = require("../util/error");
 
@@ -27,11 +26,7 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!loadedUser) return next(new CustomError("A user with this email could not be found", 404));
   const isAuthorized = await bcrypt.compare(password, loadedUser.password);
   if (!isAuthorized) return next(new CustomError("Check your email and password again", 401));
-  const accessToken = await signAccessToken(loadedUser.id);
-  const [header, body, signature] = accessToken.split(".");
-  const redisPayload = `${header}.${body}`;
-  const signatureHash = generateHash(signature);
-  const time = ms(process.env.JWT_ACCESS_TOKEN_EXPIRATION) / 1000;
-  await setKeyPair(signatureHash, redisPayload, time);
-  res.status(200).json({token: signature})
+  const accessToken = await generateTokenPair(loadedUser.id, "access");
+  const refreshToken = await generateTokenPair(loadedUser.id, "refresh");
+  res.status(200).json({accessToken, refreshToken})
 });
