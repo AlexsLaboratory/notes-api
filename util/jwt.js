@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const {getKeyPair, generateHash, setKeyPair} = require("./redis");
+const {getKeyPair, generateHash, setKeyPair, setKeyPairEpoch, keyPairExists} = require("./redis");
 const {CustomError} = require("./error");
 const ms = require("ms");
 
@@ -73,9 +73,13 @@ module.exports.verifyRefreshToken = async (signature) => {
     }
     const refreshToken = await getJWT(signature);
     if (!refreshToken) return reject(new CustomError("Not authenticated", 401));
-    jwt.verify(refreshToken, secret, options, (err, decodedToken) => {
+    jwt.verify(refreshToken, secret, options, async (err, decodedToken) => {
       if (err) return reject(err);
-      return resolve(decodedToken)
+      const signatureHash = generateHash(signature);
+      const blackListString = `BK-LIST-${signatureHash}`;
+      if (await keyPairExists(blackListString)) return reject(new CustomError("Forbidden", 403));
+      await setKeyPairEpoch(blackListString, "", decodedToken.iat);
+      return resolve(decodedToken);
     });
   });
 };

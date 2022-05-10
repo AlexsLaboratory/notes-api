@@ -40,3 +40,22 @@ module.exports.setKeyPair = async (key, value, time) => {
     throw new CustomError(e, 500);
   }
 }
+
+module.exports.setKeyPairEpoch = async (key, value, epoch) => {
+  try {
+    return await instance.set(key, value, {
+      EXAT: epoch,
+      NX: true
+    });
+  } catch (e) {
+    throw new CustomError(e, 500);
+  }
+}
+
+module.exports.keyPairExists = async (key) => {
+  try {
+    return await instance.exists(key);
+  } catch (e) {
+    throw new CustomError(e, 500);
+  }
+}
