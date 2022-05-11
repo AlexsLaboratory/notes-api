@@ -1,7 +1,7 @@
 const express = require("express");
 const {check} = require("express-validator");
 const {User} = require("../models");
-const {signup, login} = require("../controllers/auth");
+const {signup, login, refresh} = require("../controllers/auth");
 
 const app = express();
 app.use(express.json());
@@ -32,5 +32,11 @@ app.post("/login", [
     check("password").trim().isLength({min: 8}),
   ], login
 );
+
+app.post("/refresh", [
+  check("refreshToken")
+    .not()
+    .isEmpty()
+], refresh);
 
 module.exports = app;
