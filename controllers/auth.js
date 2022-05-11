@@ -33,6 +33,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
 exports.refresh = catchAsync(async (req, res, next) => {
   const signature = req.body.refreshToken;
+  if (!signature) return next(new CustomError("Refresh Token Required", 400));
   const token = await verifyRefreshToken(signature);
   const userID = token.userID;
   const accessToken = await generateTokenPair(userID, "access");
