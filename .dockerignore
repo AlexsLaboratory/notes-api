@@ -1,3 +1,4 @@
 ./changelog-template.hbs
 ./CHANGELOG.md
 ./README.md
+./node_modules

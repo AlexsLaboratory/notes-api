@@ -1,5 +1,9 @@
 if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config({path: "config/.env"})
+  require("dotenv-defaults").config({
+    path: "config/.env",
+    encoding: "utf8",
+    defaults: "config/.env.defaults"
+  })
 }
 const path = require("path");
 const express = require("express");
@@ -8,7 +12,6 @@ const errorHandler = require("./util/error");
 const sequelize = require('./util/database');
 const noteRoutes = require('./routes/note');
 const authRoutes = require('./routes/auth');
-const PORT = process.env.PORT || 80;
 
 app.use("/note", noteRoutes);
 app.use("/auth", authRoutes);
@@ -18,7 +21,7 @@ app.use(errorHandler);
 sequelize
   .sync()
   .then(result => {
-    app.listen(PORT);
+    app.listen(process.env.HTTP_PORT);
   })
   .catch(err => {
     console.log(err);

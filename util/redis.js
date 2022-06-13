@@ -1,18 +1,15 @@
-const redis = require("redis");
+const Redis = require("ioredis");
 const crypto = require("crypto");
 const {CustomError} = require("./error");
 
 function redisInstance() {
-  const client = redis.createClient({
-    url: "redis://redis:6379"
-  });
+  const client = new Redis(`redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`);
   client.on("connect", () => {
     console.log("Redis Client Connected!");
   });
   client.on("error", (err) => {
     throw new CustomError(err, 500);
   });
-  client.connect();
   return client;
 }
 
@@ -32,10 +29,7 @@ module.exports.getKeyPair = async (key) => {
 
 module.exports.setKeyPair = async (key, value, time) => {
   try {
-    return await instance.set(key, value, {
-      EX: time,
-      NX: true
-    });
+    return await instance.set(key, value, "EX", time, "NX");
   } catch (e) {
     throw new CustomError(e, 500);
   }
@@ -43,10 +37,7 @@ module.exports.setKeyPair = async (key, value, time) => {
 
 module.exports.setKeyPairEpoch = async (key, value, epoch) => {
   try {
-    return await instance.set(key, value, {
-      EXAT: epoch,
-      NX: true
-    });
+    return await instance.set(key, value, "EXAT", epoch, "NX");
   } catch (e) {
     throw new CustomError(e, 500);
   }
