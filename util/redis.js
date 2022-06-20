@@ -3,7 +3,16 @@ const crypto = require("crypto");
 const {CustomError} = require("./error");
 
 function redisInstance() {
-  const client = new Redis(`redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`);
+  let client = new Redis(`redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`);
+  if (process.env.REDIS_MODE === "sentinel") {
+    client = new Redis({
+      sentinels: [
+        { host: `${process.env.REDIS_HOST}`, port: `${process.env.REDIS_PORT}` },
+      ],
+      name: process.env.REDIS_MASTER_NAME,
+    });
+  }
+
   client.on("connect", () => {
     console.log("Redis Client Connected!");
   });
