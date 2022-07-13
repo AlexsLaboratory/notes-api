@@ -78,7 +78,7 @@ module.exports.verifyRefreshToken = async (signature) => {
       const signatureHash = generateHash(signature);
       const blackListString = `BK-LIST-${signatureHash}`;
       if (await keyPairExists(blackListString)) return reject(new CustomError("Forbidden", 403));
-      await setKeyPairEpoch(blackListString, "", decodedToken.iat);
+      await setKeyPairEpoch(blackListString, "", decodedToken.exp);
       return resolve(decodedToken);
     });
   });
