@@ -4,13 +4,13 @@
     "password": "",
     "database": "",
     "host": "",
-    "dialect": "mysql"
+    "dialect": "postgres"
   },
   "production": {
     "username": "",
     "password": "",
     "database": "",
     "host": "",
-    "dialect": "mysql"
+    "dialect": "postgres"
   }
 }

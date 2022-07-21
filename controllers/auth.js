@@ -1,69 +1,42 @@
 const {validationResult} = require("express-validator");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const {User} = require("../models");
+const {generateTokenPair, verifyRefreshToken} = require("../util/jwt");
+const ms = require("ms");
+const {CustomError, catchAsync} = require("../util/error");
 
-exports.signup = (req, res, body) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const error = new Error("Validation failed.");
-    error.statusCode = 422;
-    error.data = errors.array();
-    throw error;
-  }
+exports.signup = catchAsync(async (req, res, next) => {
+  const validation = validationResult(req);
+  if (!validation.isEmpty()) return next(new CustomError("Validation failed", 422));
   const email = req.body.email;
-  const name = req.body.name;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
   const password = req.body.password;
-  bcrypt
-    .hash(password, 12)
-    .then(hashedPassword => {
-      const user = new User({
-        email: email,
-        password: hashedPassword,
-        name: name
-      })
-      return user.save();
-    })
-    .then(result => {
-      res.status(201).json({message: "User created", userId: result.id});
-    }).catch(err => {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
+  const hashedPassword = await bcrypt.hash(password, 12);
+  const user = await User.create({
+    email: email, password: hashedPassword, firstName: firstName, lastName: lastName,
   });
-}
+  res.status(201).json({message: "User created", userID: user.id});
+});
 
-exports.login = (req, res, next) => {
+exports.login = catchAsync(async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  let loadedUser;
-  User.findOne({where: {email: email}})
-    .then(user => {
-      if (!user) {
-        const error = new Error("A user with this email could not be found.")
-        error.statusCode = 401;
-        throw error;
-      }
-      loadedUser = user;
-      return bcrypt.compare(password, user.password)
-    })
-    .then(isEqual => {
-      if (!isEqual) {
-        const error = new Error("Wrong password!");
-        error.statusCode = 401;
-        throw error;
-      }
-      const token = jwt.sign({
-        userId: loadedUser.id,
-        email: loadedUser.email
-      }, process.env.API_SECRET, {expiresIn: "1h"})
-      res.status(200).json({userId: loadedUser.id, token: token})
-    })
-    .catch(err => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err)
-    })
-}
+  let loadedUser = await User.findOne({where: {email: email}});
+  if (!loadedUser) return next(new CustomError("A user with this email could not be found", 404));
+  const isAuthorized = await bcrypt.compare(password, loadedUser.password);
+  if (!isAuthorized) return next(new CustomError("Check your email and password again", 401));
+  const accessToken = await generateTokenPair(loadedUser.id, "access");
+  const refreshToken = await generateTokenPair(loadedUser.id, "refresh");
+  res.status(200).json({accessToken, refreshToken});
+});
+
+exports.refresh = catchAsync(async (req, res, next) => {
+  const signature = req.body.refreshToken;
+  if (!signature) return next(new CustomError("Refresh Token Required", 400));
+  const token = await verifyRefreshToken(signature);
+  const userID = token.userID;
+  const accessToken = await generateTokenPair(userID, "access");
+  const refreshToken = await generateTokenPair(userID, "refresh");
+  res.status(200).json({accessToken, refreshToken});
+})

@@ -1,29 +1,27 @@
 if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config({path: "config/.env"})
+  require("dotenv-defaults").config({
+    path: "config/.env",
+    encoding: "utf8",
+    defaults: "config/.env.defaults"
+  })
 }
 const path = require("path");
 const express = require("express");
 const app = express();
+const errorHandler = require("./util/error");
 const sequelize = require('./util/database');
-const workoutRoutes = require('./routes/workout');
+const noteRoutes = require('./routes/note');
 const authRoutes = require('./routes/auth');
-const PORT = process.env.PORT || 3000;
 
-app.use("/workout", workoutRoutes);
+app.use("/note", noteRoutes);
 app.use("/auth", authRoutes);
 
-app.use((error, req, res, next) => {
-  console.log(error);
-  const status = error.statusCode || 500;
-  const message = error.message;
-  const data = error.data;
-  res.status(status).json({ message: message, data: data });
-});
+app.use(errorHandler);
 
 sequelize
   .sync()
   .then(result => {
-    app.listen(PORT);
+    app.listen(process.env.HTTP_PORT);
   })
   .catch(err => {
     console.log(err);

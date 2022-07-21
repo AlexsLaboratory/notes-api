@@ -1,5 +1,5 @@
 {
-  "name": "gainz-api",
+  "name": "notes-api",
   "version": "0.0.0",
   "scripts": {
     "dev": "nodemon app.js",
@@ -8,7 +8,7 @@
   },
   "auto-changelog": {
     "template": "changelog-template.hbs",
-    "compareUrl": "https://gitlab.cs.ecu.edu/csci-3030/fall-2021/team-10/gainz-api/-/compare/{from}...{to}",
+    "compareUrl": "https://github.com/Lowe-Man/notes-api/compare/{from}...{to}",
     "unreleased": false,
     "commitLimit": false,
     "breakingPattern": "BREAKING CHANGE:",
@@ -25,11 +25,15 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "dotenv": "^10.0.0",
+    "dotenv-defaults": "^5.0.0",
     "express": "~4.16.1",
     "express-validator": "^6.13.0",
+    "ioredis": "^5.0.6",
     "jsonwebtoken": "^8.5.1",
-    "mysql2": "^2.3.0",
+    "ms": "^2.1.3",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "redis": "^4.0.6",
     "sequelize": "^6.7.0"
   },
   "devDependencies": {
