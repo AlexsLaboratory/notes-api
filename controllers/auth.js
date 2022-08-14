@@ -3,11 +3,15 @@ const bcrypt = require("bcrypt");
 const {User} = require("../models");
 const {generateTokenPair, verifyRefreshToken} = require("../util/jwt");
 const ms = require("ms");
-const {CustomError, catchAsync} = require("../util/error");
+const {CustomError, catchAsync, errorFormatter} = require("../util/error");
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const validation = validationResult(req);
-  if (!validation.isEmpty()) return next(new CustomError("Validation failed", 422));
+  const validation = validationResult(req).formatWith(errorFormatter);
+  if (!validation.isEmpty()) {
+    const error = new CustomError("Field(s) are invalid", 400);
+    error.errors = validation.array();
+    return next(error);
+  }
   const email = req.body.email;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;

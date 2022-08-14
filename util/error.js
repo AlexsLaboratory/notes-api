@@ -18,9 +18,9 @@ function catchAsync(fn) {
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
+    isOperational: err.isOperational,
     message: err.message,
+    errors: err.errors,
     data: err.data,
     stack: err.stack
   });
@@ -30,6 +30,7 @@ const sendErrorProd = (err, res) => {
   if (err.isOperational) {
     res.status(err.statusCode).json({
       message: err.message,
+      errors: err.errors,
       data: err.data,
     });
   } else {
@@ -40,6 +41,10 @@ const sendErrorProd = (err, res) => {
   }
 };
 
+const errorFormatter = ({location, msg, param, value, nestedErrors}) => {
+  return `${param}: ${msg}`;
+}
+
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   if (process.env.NODE_ENV === "development") {
@@ -49,5 +54,6 @@ module.exports = (err, req, res, next) => {
   }
 };
 
-module.exports.CustomError = CustomError
+module.exports.errorFormatter = errorFormatter;
+module.exports.CustomError = CustomError;
 module.exports.catchAsync = catchAsync;
