@@ -9,7 +9,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   const validation = validationResult(req).formatWith(errorFormatter);
   if (!validation.isEmpty()) {
     const error = new CustomError("Field(s) are invalid", 400);
-    error.errors = validation.array();
+    error.errors = validation.mapped();
     return next(error);
   }
   const email = req.body.email;

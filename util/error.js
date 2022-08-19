@@ -42,9 +42,7 @@ const sendErrorProd = (err, res) => {
 };
 
 const errorFormatter = ({location, msg, param, value, nestedErrors}) => {
-  return {
-    [param]: msg
-  };
+  return `${msg}`;
 }
 
 module.exports = (err, req, res, next) => {
