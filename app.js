@@ -7,12 +7,14 @@ if (process.env.NODE_ENV !== "production") {
 }
 const path = require("path");
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const errorHandler = require("./util/error");
 const sequelize = require('./util/database');
 const noteRoutes = require('./routes/note');
 const authRoutes = require('./routes/auth');
 
+app.use(cors());
 app.use("/note", noteRoutes);
 app.use("/auth", authRoutes);
 
