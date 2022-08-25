@@ -32,7 +32,10 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!isAuthorized) return next(new CustomError("Check your email and password again", 401));
   const accessToken = await generateTokenPair(loadedUser.id, "access");
   const refreshToken = await generateTokenPair(loadedUser.id, "refresh");
-  res.status(200).json({accessToken, refreshToken});
+  res.cookie("accessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production"})
+      .cookie("refreshToken", refreshToken, {httpOnly: true, secure: process.env.NODE_ENV === "production"})
+      .status(200)
+      .json({accessToken, refreshToken});
 });
 
 exports.refresh = catchAsync(async (req, res, next) => {
@@ -42,5 +45,8 @@ exports.refresh = catchAsync(async (req, res, next) => {
   const userID = token.userID;
   const accessToken = await generateTokenPair(userID, "access");
   const refreshToken = await generateTokenPair(userID, "refresh");
-  res.status(200).json({accessToken, refreshToken});
+  res.cookie("accessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production"})
+      .cookie("refreshToken", refreshToken, {httpOnly: true, secure: process.env.NODE_ENV === "production"})
+      .status(200)
+      .json({accessToken, refreshToken});
 })
