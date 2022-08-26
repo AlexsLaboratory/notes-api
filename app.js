@@ -15,7 +15,9 @@ const sequelize = require('./util/database');
 const noteRoutes = require('./routes/note');
 const authRoutes = require('./routes/auth');
 
-app.use(cors());
+app.use(cors({
+  origin: "dev.lowe.lan",
+}));
 app.use(cookieParser());
 app.use("/note", noteRoutes);
 app.use("/auth", authRoutes);

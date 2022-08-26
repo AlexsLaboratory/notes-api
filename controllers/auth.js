@@ -32,8 +32,8 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!isAuthorized) return next(new CustomError("Check your email and password again", 401));
   const accessToken = await generateTokenPair(loadedUser.id, "access");
   const refreshToken = await generateTokenPair(loadedUser.id, "refresh");
-  res.cookie("accessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production"})
-      .cookie("refreshToken", refreshToken, {httpOnly: true, secure: process.env.NODE_ENV === "production"})
+  res.cookie("accessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'none'})
+      .cookie("refreshToken", refreshToken, {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'none'})
       .status(200)
       .json({accessToken, refreshToken});
 });
@@ -45,8 +45,8 @@ exports.refresh = catchAsync(async (req, res, next) => {
   const userID = token.userID;
   const accessToken = await generateTokenPair(userID, "access");
   const refreshToken = await generateTokenPair(userID, "refresh");
-  res.cookie("accessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production"})
-      .cookie("refreshToken", refreshToken, {httpOnly: true, secure: process.env.NODE_ENV === "production"})
+  res.cookie("accessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'none'})
+      .cookie("refreshToken", refreshToken, {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'none'})
       .status(200)
       .json({accessToken, refreshToken});
 })
