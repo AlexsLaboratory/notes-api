@@ -4,7 +4,7 @@ const {verifyAccessToken} = require("../util/jwt");
 
 module.exports = catchAsync(async (req, res, next) => {
   const authHeader = req.get("Authorization");
-  const authCookie = req.cookies.auth_token;
+  const authCookie = req.cookies.accessToken;
   if (!authHeader && !authCookie) return next(new CustomError("Not authenticated", 401));
   let decodedToken;
   if (authHeader) {
