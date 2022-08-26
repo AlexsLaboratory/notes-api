@@ -16,8 +16,10 @@ const noteRoutes = require('./routes/note');
 const authRoutes = require('./routes/auth');
 
 app.use(cors({
-  origin: "dev.lowe.lan",
+  origin: true,
+  credentials: true
 }));
+
 app.use(cookieParser());
 app.use("/note", noteRoutes);
 app.use("/auth", authRoutes);
