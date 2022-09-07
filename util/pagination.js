@@ -24,6 +24,7 @@ async function hasPrev(obj, cursor, userID) {
 
 async function find(obj, cursor, limit, req, res, direction) {
   const userID = parseInt(req.userID);
+
   async function processResult(data) {
     if (data[data.length - 1].id === undefined) {
       res.status(404).json({
@@ -41,12 +42,10 @@ async function find(obj, cursor, limit, req, res, direction) {
     prev = prev > 0;
 
     res.status(200).json({
-      page: {
-        prev: prev ? data[0].id : null,
-        next: next ? data[data.length - 1].id : null,
-        direction: direction,
-        data
-      }
+      prev: prev ? data[0].id : null,
+      next: next ? data[data.length - 1].id : null,
+      direction: direction,
+      data
     });
   }
 
