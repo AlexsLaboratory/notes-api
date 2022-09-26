@@ -35,6 +35,15 @@ exports.editNote = catchAsync(async (req, res, next) => {
   res.status(201).end();
 });
 
+exports.deleteNote = catchAsync(async (req, res, next) => {
+  const primaryKey = parseInt(req.query.id)
+  const userID = parseInt(req.userID);
+  if (!userID) return next(new CustomError("Please login first", 401));
+  const note = await Note.destroy({where: {id: primaryKey, userID: userID}});
+  if (!note) return next(new CustomError("Note could not be found", 404));
+  res.status(200).end();
+});
+
 exports.getNotes = catchAsync(async (req, res, next) => {
   let limit = parseInt(req.query.limit);
   let cursor = parseInt(req.query.cursor);
